@@ -1,9 +1,4 @@
-import {
-  PermissionFlagsBits,
-  REST,
-  Routes,
-  SlashCommandBuilder,
-} from "discord.js";
+import { REST, Routes, SlashCommandBuilder } from "discord.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -52,7 +47,6 @@ const commands = [
             .setRequired(true),
         ),
     )
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 
     .addSubcommand((sub) =>
       sub

@@ -101,6 +101,14 @@ export default async (client: Client) => {
         switch (sub) {
           case "adjust": {
             if (
+              !(interaction.member as GuildMember).roles.cache.some(
+                (role) => role.name === "Logi",
+              )
+            ) {
+              return;
+            }
+
+            if (
               member instanceof GuildMember &&
               amount != null &&
               !isNaN(Number(amount))
