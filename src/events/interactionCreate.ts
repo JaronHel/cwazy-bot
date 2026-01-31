@@ -1,98 +1,85 @@
-import {
-  APIActionRowComponent,
-  APIModalInteractionResponseCallbackData,
-  APITextInputComponent,
-  Client,
-  ComponentType,
-  GuildMember,
-  MessageFlags,
-  TextChannel,
-  TextInputStyle,
-} from "discord.js";
-import { Mass } from "../classes/mass";
-import { createMassMessage } from "../messages/massMessage";
+import { Client, GuildMember, MessageFlags } from "discord.js";
 import { Balance } from "../models/balance.model";
+import { hasPermission } from "../utils/utils";
 
 export default async (client: Client) => {
   client.on("interactionCreate", async (interaction) => {
     if (interaction.isChatInputCommand()) {
-      // help
-      if (interaction.commandName === "help") {
-        await interaction.reply({
-          content: "Help commands",
-          flags: MessageFlags.Ephemeral,
-        });
-      }
+      // TODO ON HOLD
+      // if (interaction.commandName === "help") {
+      //   await interaction.reply({
+      //     content: "Help commands",
+      //     flags: MessageFlags.Ephemeral,
+      //   });
+      // }
 
-      // party
-      if (interaction.commandName === "mass") {
-        const sub = interaction.options.getSubcommand();
+      // if (interaction.commandName === "mass") {
+      //   const sub = interaction.options.getSubcommand();
 
-        // create
-        if (sub === "create") {
-          const massTime: APITextInputComponent = {
-            type: ComponentType.TextInput,
-            custom_id: "massTime",
-            label: "Enter mass time in UTC",
-            placeholder: "18",
-            style: TextInputStyle.Short,
-            required: true,
-          };
+      //   if (sub === "create") {
+      //     const massTime: APITextInputComponent = {
+      //       type: ComponentType.TextInput,
+      //       custom_id: "massTime",
+      //       label: "Enter mass time in UTC",
+      //       placeholder: "18",
+      //       style: TextInputStyle.Short,
+      //       required: true,
+      //     };
 
-          const massDate: APITextInputComponent = {
-            type: ComponentType.TextInput,
-            custom_id: "massDate",
-            label: "Enter mass date",
-            placeholder: new Date().toLocaleDateString(),
-            style: TextInputStyle.Short,
-            required: true,
-          };
+      //     const massDate: APITextInputComponent = {
+      //       type: ComponentType.TextInput,
+      //       custom_id: "massDate",
+      //       label: "Enter mass date",
+      //       placeholder: new Date().toLocaleDateString(),
+      //       style: TextInputStyle.Short,
+      //       required: true,
+      //     };
 
-          const massLocation: APITextInputComponent = {
-            type: ComponentType.TextInput,
-            custom_id: "massLocation",
-            label: "Enter mass location",
-            placeholder: "Lymhurst Portal",
-            style: TextInputStyle.Short,
-            required: true,
-          };
+      //     const massLocation: APITextInputComponent = {
+      //       type: ComponentType.TextInput,
+      //       custom_id: "massLocation",
+      //       label: "Enter mass location",
+      //       placeholder: "Lymhurst Portal",
+      //       style: TextInputStyle.Short,
+      //       required: true,
+      //     };
 
-          const massContent: APITextInputComponent = {
-            type: ComponentType.TextInput,
-            custom_id: "massContent",
-            label: "Enter content description",
-            placeholder: "Wipe some shitters in portal zone",
-            style: TextInputStyle.Paragraph,
-            required: true,
-          };
+      //     const massContent: APITextInputComponent = {
+      //       type: ComponentType.TextInput,
+      //       custom_id: "massContent",
+      //       label: "Enter content description",
+      //       placeholder: "Wipe some shitters in portal zone",
+      //       style: TextInputStyle.Paragraph,
+      //       required: true,
+      //     };
 
-          const massRoles: APITextInputComponent = {
-            type: ComponentType.TextInput,
-            custom_id: "massRoles",
-            label: "Enter roles",
-            placeholder: "Hallowfall\nGA\nLongbow",
-            style: TextInputStyle.Paragraph,
-            required: true,
-          };
+      //     const massRoles: APITextInputComponent = {
+      //       type: ComponentType.TextInput,
+      //       custom_id: "massRoles",
+      //       label: "Enter roles",
+      //       placeholder: "Hallowfall\nGA\nLongbow",
+      //       style: TextInputStyle.Paragraph,
+      //       required: true,
+      //     };
 
-          const TextInputRows: APIActionRowComponent<APITextInputComponent>[] =
-            [
-              { type: ComponentType.ActionRow, components: [massTime] },
-              { type: ComponentType.ActionRow, components: [massDate] },
-              { type: ComponentType.ActionRow, components: [massLocation] },
-              { type: ComponentType.ActionRow, components: [massContent] },
-              { type: ComponentType.ActionRow, components: [massRoles] },
-            ];
+      //     const TextInputRows: APIActionRowComponent<APITextInputComponent>[] =
+      //       [
+      //         { type: ComponentType.ActionRow, components: [massTime] },
+      //         { type: ComponentType.ActionRow, components: [massDate] },
+      //         { type: ComponentType.ActionRow, components: [massLocation] },
+      //         { type: ComponentType.ActionRow, components: [massContent] },
+      //         { type: ComponentType.ActionRow, components: [massRoles] },
+      //       ];
 
-          const massCreateModal: APIModalInteractionResponseCallbackData = {
-            custom_id: "massCreateModal",
-            title: "Create mass",
-            components: TextInputRows,
-          };
+      //     const massCreateModal: APIModalInteractionResponseCallbackData = {
+      //       custom_id: "massCreateModal",
+      //       title: "Create mass",
+      //       components: TextInputRows,
+      //     };
 
-          await interaction.showModal(massCreateModal);
-        }
-      }
+      //     await interaction.showModal(massCreateModal);
+      //   }
+      // }
       if (interaction.commandName === "balance") {
         const sub = interaction.options.getSubcommand();
         const member = interaction.options.getMember("member");
@@ -101,18 +88,14 @@ export default async (client: Client) => {
         switch (sub) {
           case "adjust": {
             if (
-              !(interaction.member as GuildMember).roles.cache.some(
-                (role) => role.name === "Logi",
-              )
-            ) {
-              return;
-            }
-
-            if (
               member instanceof GuildMember &&
               amount != null &&
               !isNaN(Number(amount))
             ) {
+              if (!(await hasPermission(interaction, ["Logi"], "and"))) {
+                return;
+              }
+
               const existingMember = await Balance.findOne({
                 discordID: member.id,
               });
@@ -131,10 +114,53 @@ export default async (client: Client) => {
                 newBalance = existingMember.balance;
               }
               await interaction.reply({
-                content: `Balance of ${member.displayName} (${member.id}) adjusted, new balance: ${newBalance}`,
+                content: `Balance of ${member.displayName} (${member.id}) adjusted for ${amount}, new balance: ${newBalance}`,
                 flags: MessageFlags.Ephemeral,
               });
             }
+            break;
+          }
+
+          case "clear": {
+            if (member instanceof GuildMember) {
+              if (!(await hasPermission(interaction, ["Logi"], "and"))) {
+                return;
+              }
+
+              const existingMember = await Balance.findOne({
+                discordID: member.id,
+              });
+
+              if (existingMember === null) {
+                await interaction.reply({
+                  content: `Member ${member.displayName} (${member.id}) doesn't have balance yet`,
+                  flags: MessageFlags.Ephemeral,
+                });
+              } else {
+                existingMember.balance = 0;
+                await existingMember.save();
+                await interaction.reply({
+                  content: `Cleared balance of ${member.displayName} (${member.id}), new balance: ${existingMember.balance}`,
+                  flags: MessageFlags.Ephemeral,
+                });
+              }
+            }
+            break;
+          }
+
+          case "cleanup": {
+            if (!(await hasPermission(interaction, ["Logi"], "and"))) {
+              return;
+            }
+
+            const emptyBalances = await Balance.deleteMany({
+              balance: { $eq: 0 },
+            });
+
+            await interaction.reply({
+              content: `Deleted ${emptyBalances.deletedCount} entries from database`,
+              flags: MessageFlags.Ephemeral,
+            });
             break;
           }
 
@@ -158,37 +184,68 @@ export default async (client: Client) => {
             }
             break;
           }
+
+          case "list": {
+            if (!(await hasPermission(interaction, ["Logi"], "and"))) {
+              return;
+            }
+
+            const openBalances = await Balance.find({
+              balance: { $ne: 0 },
+            });
+            // TODO Show balance based on amount
+            if (openBalances.length !== 0) {
+              let content = "";
+              for (const balance of openBalances) {
+                const balanceOwner = interaction.guild?.members.cache.get(
+                  balance.discordID,
+                )?.displayName;
+                content += `${balanceOwner} (${balance.discordID}): ${balance.balance}\n`;
+              }
+              await interaction.reply({
+                content: content,
+                flags: MessageFlags.Ephemeral,
+              });
+            } else {
+              await interaction.reply({
+                content: "No open balances found",
+                flags: MessageFlags.Ephemeral,
+              });
+            }
+            break;
+          }
         }
       }
-    } else if (interaction.isModalSubmit()) {
-      if (
-        interaction.customId === "massCreateModal" &&
-        interaction.channel instanceof TextChannel &&
-        interaction.channel.isSendable()
-      ) {
-        const massTime = interaction.fields.getTextInputValue("massTime");
-        const massDate = interaction.fields.getTextInputValue("massDate");
-        const massLocation =
-          interaction.fields.getTextInputValue("massLocation");
-        const massContent = interaction.fields.getTextInputValue("massContent");
-        const massRoles = interaction.fields.getTextInputValue("massRoles");
-        const mass = new Mass(
-          massTime,
-          massDate,
-          massLocation,
-          massContent,
-          massRoles,
-        );
+      // TODO ON HOLD
+      // } else if (interaction.isModalSubmit()) {
+      //   if (
+      //     interaction.customId === "massCreateModal" &&
+      //     interaction.channel instanceof TextChannel &&
+      //     interaction.channel.isSendable()
+      //   ) {
+      //     const massTime = interaction.fields.getTextInputValue("massTime");
+      //     const massDate = interaction.fields.getTextInputValue("massDate");
+      //     const massLocation =
+      //       interaction.fields.getTextInputValue("massLocation");
+      //     const massContent = interaction.fields.getTextInputValue("massContent");
+      //     const massRoles = interaction.fields.getTextInputValue("massRoles");
+      //     const mass = new Mass(
+      //       massTime,
+      //       massDate,
+      //       massLocation,
+      //       massContent,
+      //       massRoles,
+      //     );
 
-        const parentMessage = await interaction.channel.send(
-          createMassMessage(mass),
-        );
+      //     const parentMessage = await interaction.channel.send(
+      //       createMassMessage(mass),
+      //     );
 
-        const thread = await parentMessage.startThread({
-          name: `${massTime} UTC ${massDate}`,
-        });
-        interaction.deferUpdate();
-      }
+      //     const thread = await parentMessage.startThread({
+      //       name: `${massTime} UTC ${massDate}`,
+      //     });
+      //     interaction.deferUpdate();
+      //   }
     }
   });
 };

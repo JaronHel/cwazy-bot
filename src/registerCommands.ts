@@ -16,16 +16,17 @@ if (process.env.GUILD_ID === undefined) {
 }
 
 const commands = [
-  new SlashCommandBuilder()
-    .setName("help")
-    .setDescription("Shows all the available commands"),
-  new SlashCommandBuilder()
-    .setName("mass")
-    .setDescription("Mass commands")
+  // TODO ON HOLD
+  // new SlashCommandBuilder()
+  //   .setName("help")
+  //   .setDescription("Shows all the available commands"),
+  // new SlashCommandBuilder()
+  //   .setName("mass")
+  //   .setDescription("Mass commands")
 
-    .addSubcommand((sub) =>
-      sub.setName("create").setDescription("Create mass registration"),
-    ),
+  //   .addSubcommand((sub) =>
+  //     sub.setName("create").setDescription("Create mass registration"),
+  //   ),
   new SlashCommandBuilder()
     .setName("balance")
     .setDescription("Balance commands")
@@ -37,7 +38,7 @@ const commands = [
         .addUserOption((option) =>
           option
             .setName("member")
-            .setDescription("Member to adjust balance for")
+            .setDescription("Member to adjust balance")
             .setRequired(true),
         )
         .addIntegerOption((option) =>
@@ -50,14 +51,36 @@ const commands = [
 
     .addSubcommand((sub) =>
       sub
+        .setName("clear")
+        .setDescription("Clear balance of member")
+        .addUserOption((option) =>
+          option
+            .setName("member")
+            .setDescription("Member to clear balance")
+            .setRequired(true),
+        ),
+    )
+
+    .addSubcommand((sub) =>
+      sub
+        .setName("cleanup")
+        .setDescription("Removes all empty balances from database"),
+    )
+
+    .addSubcommand((sub) =>
+      sub
         .setName("show")
         .setDescription("Show balance of member")
         .addUserOption((option) =>
           option
             .setName("member")
-            .setDescription("Member to show balance for")
+            .setDescription("Member to show balance")
             .setRequired(true),
         ),
+    )
+
+    .addSubcommand((sub) =>
+      sub.setName("list").setDescription("Lists all open balances"),
     ),
 ];
 
