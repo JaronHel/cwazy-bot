@@ -1,5 +1,5 @@
 import { Client, IntentsBitField } from "discord.js";
-import connectToDb from "./db/database";
+import { connectToDb } from "./db/database";
 import clientReady from "./events/clientReady";
 import interactionCreate from "./events/interactionCreate";
 import messageCreate from "./events/messageCreate";
@@ -20,7 +20,7 @@ messageCreate(client);
 
 try {
   client.login(process.env.TOKEN);
-  connectToDb();
+  await connectToDb();
 } catch (err) {
   console.log(`Client login failed: ${err}`);
   process.exit(1);

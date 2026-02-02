@@ -5,6 +5,7 @@
   "license": "ISC",
   "author": "cyliox",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node --import=tsx src/index.ts"
   },
@@ -14,6 +15,7 @@
     "mongoose": "^9.1.5"
   },
   "devDependencies": {
+    "@types/dotenv": "^6.1.1",
     "@types/node": "^25.0.3",
     "tsx": "^4.20.3"
   }

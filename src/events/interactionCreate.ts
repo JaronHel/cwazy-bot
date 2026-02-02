@@ -1,9 +1,15 @@
-import { Client, GuildMember, MessageFlags } from "discord.js";
+import {
+  Client,
+  EmbedBuilder,
+  GuildMember,
+  Interaction,
+  MessageFlags,
+} from "discord.js";
 import { Balance } from "../models/balance.model";
 import { hasPermission } from "../utils/utils";
 
 export default async (client: Client) => {
-  client.on("interactionCreate", async (interaction) => {
+  client.on("interactionCreate", async (interaction: Interaction) => {
     if (interaction.isChatInputCommand()) {
       // TODO ON HOLD
       // if (interaction.commandName === "help") {
@@ -89,7 +95,7 @@ export default async (client: Client) => {
           case "adjust": {
             if (
               member instanceof GuildMember &&
-              amount != null &&
+              amount !== null &&
               !isNaN(Number(amount))
             ) {
               if (!(await hasPermission(interaction, ["Logi"], "and"))) {
@@ -97,14 +103,14 @@ export default async (client: Client) => {
               }
 
               const existingMember = await Balance.findOne({
-                discordID: member.id,
+                discordID: (member as GuildMember).id,
               });
 
               let newBalance = 0;
 
               if (existingMember === null) {
                 const newMember = await Balance.create({
-                  discordID: member.id,
+                  discordID: (member as GuildMember).id,
                   balance: Number(amount),
                 });
                 newBalance = newMember.balance;
@@ -114,7 +120,7 @@ export default async (client: Client) => {
                 newBalance = existingMember.balance;
               }
               await interaction.reply({
-                content: `Balance of ${member.displayName} (${member.id}) adjusted for ${amount}, new balance: ${newBalance}`,
+                content: `Balance of ${(member as GuildMember).displayName} (${(member as GuildMember).id}) adjusted for ${amount}, new balance: ${newBalance}`,
                 flags: MessageFlags.Ephemeral,
               });
             }
@@ -128,19 +134,19 @@ export default async (client: Client) => {
               }
 
               const existingMember = await Balance.findOne({
-                discordID: member.id,
+                discordID: (member as GuildMember).id,
               });
 
               if (existingMember === null) {
                 await interaction.reply({
-                  content: `Member ${member.displayName} (${member.id}) doesn't have balance yet`,
+                  content: `Member ${(member as GuildMember).displayName} (${(member as GuildMember).id}) doesn't have balance yet`,
                   flags: MessageFlags.Ephemeral,
                 });
               } else {
                 existingMember.balance = 0;
                 await existingMember.save();
                 await interaction.reply({
-                  content: `Cleared balance of ${member.displayName} (${member.id}), new balance: ${existingMember.balance}`,
+                  content: `Cleared balance of ${(member as GuildMember).displayName} (${(member as GuildMember).id}), new balance: ${existingMember.balance}`,
                   flags: MessageFlags.Ephemeral,
                 });
               }
@@ -167,17 +173,37 @@ export default async (client: Client) => {
           case "show": {
             if (member instanceof GuildMember) {
               const existingMember = await Balance.findOne({
-                discordID: member.id,
+                discordID: (member as GuildMember).id,
               });
 
               if (existingMember === null) {
                 await interaction.reply({
-                  content: `Member ${member.displayName} (${member.id}) doesn't have balance yet`,
+                  content: `Member ${(member as GuildMember).displayName} (${(member as GuildMember).id}) doesn't have balance yet`,
                   flags: MessageFlags.Ephemeral,
                 });
               } else {
+                const balanceOwner = interaction.guild?.members.cache.get(
+                  existingMember.discordID,
+                );
+                if (balanceOwner === undefined) {
+                  return interaction.reply({
+                    content: "Member does not exist",
+                    flags: MessageFlags.Ephemeral,
+                  });
+                }
+                const embed = new EmbedBuilder()
+                  .setColor("Gold")
+                  .setTimestamp()
+                  .setAuthor({
+                    name: balanceOwner.displayName,
+                    iconURL: balanceOwner.displayAvatarURL(),
+                  })
+                  .addFields({
+                    name: "Current Balance",
+                    value: `**${existingMember.balance}**`,
+                  });
                 await interaction.reply({
-                  content: `Current balance of ${member.displayName} (${member.id}): ${existingMember.balance}`,
+                  embeds: [embed],
                   flags: MessageFlags.Ephemeral,
                 });
               }
