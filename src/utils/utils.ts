@@ -32,6 +32,7 @@ export async function hasPermission(
   }
 
   const memberRoles = new Collection<string, Role>(
+    // TODO FIX CACHE
     (interaction.member as GuildMember).roles.cache.map((role) => [
       role.name,
       role,

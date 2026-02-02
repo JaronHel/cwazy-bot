@@ -182,7 +182,7 @@ export default async (client: Client) => {
                   flags: MessageFlags.Ephemeral,
                 });
               } else {
-                const balanceOwner = interaction.guild?.members.cache.get(
+                const balanceOwner = await interaction.guild!.members.fetch(
                   existingMember.discordID,
                 );
                 if (balanceOwner === undefined) {
@@ -223,10 +223,10 @@ export default async (client: Client) => {
             if (openBalances.length !== 0) {
               let content = "";
               for (const balance of openBalances) {
-                const balanceOwner = interaction.guild?.members.cache.get(
+                const balanceOwner = await interaction.guild!.members.fetch(
                   balance.discordID,
-                )?.displayName;
-                content += `${balanceOwner} (${balance.discordID}): ${balance.balance}\n`;
+                );
+                content += `${balanceOwner.displayName} (${balance.discordID}): ${balance.balance}\n`;
               }
               await interaction.reply({
                 content: content,
