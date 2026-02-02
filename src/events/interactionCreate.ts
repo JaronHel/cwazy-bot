@@ -222,12 +222,15 @@ export default async (client: Client) => {
             // TODO Show balance based on amount
             if (openBalances.length !== 0) {
               let content = "";
+              let total = 0;
               for (const balance of openBalances) {
                 const balanceOwner = await interaction.guild!.members.fetch(
                   balance.discordID,
                 );
+                total += balance.balance;
                 content += `${balanceOwner.displayName} (${balance.discordID}): ${balance.balance}\n`;
               }
+              content += `**TOTAL: ${total}**`;
               await interaction.reply({
                 content: content,
                 flags: MessageFlags.Ephemeral,
