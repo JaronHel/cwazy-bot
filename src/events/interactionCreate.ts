@@ -212,34 +212,37 @@ export default async (client: Client) => {
           }
 
           case "list": {
+            await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
             const balances = await Balance.find({
               balance: { $gt: 0 },
             }).sort({ balance: -1 });
+
             if (balances.length !== 0) {
-              let content = "";
               const embed = new EmbedBuilder()
                 .setColor("Gold")
                 .setTimestamp()
                 .setTitle("Balances");
+
               const members = await Promise.all(
                 balances.map((b) =>
                   interaction.guild!.members.fetch(b.discordID),
                 ),
               );
+
               balances.forEach((balance, i) => {
                 embed.addFields({
                   name: "",
                   value: `**${i + 1}.** ${members[i].displayName} - **${balance.balance}**`,
                 });
               });
-              await interaction.reply({
+
+              await interaction.editReply({
                 embeds: [embed],
-                flags: MessageFlags.Ephemeral,
               });
             } else {
-              await interaction.reply({
+              await interaction.editReply({
                 content: "No open balances found",
-                flags: MessageFlags.Ephemeral,
               });
             }
             break;
