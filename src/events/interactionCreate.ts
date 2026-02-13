@@ -212,27 +212,28 @@ export default async (client: Client) => {
           }
 
           case "list": {
-            if (!(await hasPermission(interaction, ["Logi"], "and"))) {
-              return;
-            }
-
-            const openBalances = await Balance.find({
-              balance: { $ne: 0 },
-            });
-            // TODO Show balance based on amount
-            if (openBalances.length !== 0) {
+            const balances = await Balance.find({
+              balance: { $gt: 0 },
+            }).sort({ balance: -1 });
+            if (balances.length !== 0) {
               let content = "";
-              let total = 0;
-              for (const balance of openBalances) {
-                const balanceOwner = await interaction.guild!.members.fetch(
-                  balance.discordID,
-                );
-                total += balance.balance;
-                content += `${balanceOwner.displayName} (${balance.discordID}): ${balance.balance}\n`;
-              }
-              content += `**TOTAL: ${total}**`;
+              const embed = new EmbedBuilder()
+                .setColor("Gold")
+                .setTimestamp()
+                .setTitle("Balances");
+              const members = await Promise.all(
+                balances.map((b) =>
+                  interaction.guild!.members.fetch(b.discordID),
+                ),
+              );
+              balances.forEach((balance, i) => {
+                embed.addFields({
+                  name: "",
+                  value: `**${i + 1}.** ${members[i].displayName} - **${balance.balance}**`,
+                });
+              });
               await interaction.reply({
-                content: content,
+                embeds: [embed],
                 flags: MessageFlags.Ephemeral,
               });
             } else {
@@ -242,6 +243,7 @@ export default async (client: Client) => {
               });
             }
             break;
+            // TODO expand leaderboard so that only top 10 show and the leaderboard can be read like a book
           }
         }
       }
