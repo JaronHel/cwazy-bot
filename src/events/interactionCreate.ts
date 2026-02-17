@@ -219,10 +219,7 @@ export default async (client: Client) => {
             }).sort({ balance: -1 });
 
             if (balances.length !== 0) {
-              const embed = new EmbedBuilder()
-                .setColor("Gold")
-                .setTimestamp()
-                .setTitle("Balances");
+              const embed = new EmbedBuilder().setColor("Gold").setTimestamp();
 
               const members = await Promise.all(
                 balances.map((b) =>
@@ -230,12 +227,17 @@ export default async (client: Client) => {
                 ),
               );
 
+              let total = 0;
+
               balances.forEach((balance, i) => {
                 embed.addFields({
                   name: "",
                   value: `**${i + 1}.** ${members[i].displayName} - **${balance.balance}**`,
                 });
+                total += balance.balance;
               });
+
+              embed.setTitle(`Balances - Total: ${total}`);
 
               await interaction.editReply({
                 embeds: [embed],
