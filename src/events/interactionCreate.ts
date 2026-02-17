@@ -120,7 +120,7 @@ export default async (client: Client) => {
                 newBalance = existingMember.balance;
               }
               await interaction.reply({
-                content: `Balance of ${(member as GuildMember).displayName} (${(member as GuildMember).id}) adjusted for ${amount}, new balance: ${newBalance}`,
+                content: `Balance of ${(member as GuildMember).displayName} (${(member as GuildMember).id}) adjusted for ${amount.toLocaleString("de-DE")}, new balance: ${newBalance.toLocaleString("de-DE")}`,
                 flags: MessageFlags.Ephemeral,
               });
             }
@@ -146,7 +146,7 @@ export default async (client: Client) => {
                 existingMember.balance = 0;
                 await existingMember.save();
                 await interaction.reply({
-                  content: `Cleared balance of ${(member as GuildMember).displayName} (${(member as GuildMember).id}), new balance: ${existingMember.balance}`,
+                  content: `Cleared balance of ${(member as GuildMember).displayName} (${(member as GuildMember).id}), new balance: ${existingMember.balance.toLocaleString("de-DE")}`,
                   flags: MessageFlags.Ephemeral,
                 });
               }
@@ -200,7 +200,7 @@ export default async (client: Client) => {
                   })
                   .addFields({
                     name: "Current Balance",
-                    value: `**${existingMember.balance}**`,
+                    value: `**${existingMember.balance.toLocaleString("de-DE")}**`,
                   });
                 await interaction.reply({
                   embeds: [embed],
@@ -232,12 +232,14 @@ export default async (client: Client) => {
               balances.forEach((balance, i) => {
                 embed.addFields({
                   name: "",
-                  value: `**${i + 1}.** ${members[i].displayName} - **${balance.balance}**`,
+                  value: `**${i + 1}.** ${members[i].displayName} - **${balance.balance.toLocaleString("de-DE")}**`,
                 });
                 total += balance.balance;
               });
 
-              embed.setTitle(`Balances - Total: ${total}`);
+              embed.setTitle(
+                `Balances - Total: ${total.toLocaleString("de-DE")}`,
+              );
 
               await interaction.editReply({
                 embeds: [embed],
