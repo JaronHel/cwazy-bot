@@ -222,9 +222,13 @@ export default async (client: Client) => {
               const embed = new EmbedBuilder().setColor("Gold").setTimestamp();
 
               const members = await Promise.all(
-                balances.map((b) =>
-                  interaction.guild!.members.fetch(b.discordID),
-                ),
+                balances.map(async (b) => {
+                  try {
+                    return await interaction.guild!.members.fetch(b.discordID);
+                  } catch (err: any) {
+                    return await interaction.client.users.fetch(b.discordID);
+                  }
+                }),
               );
 
               let total = 0;
