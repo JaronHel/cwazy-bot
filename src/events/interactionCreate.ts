@@ -159,13 +159,31 @@ export default async (client: Client) => {
               return;
             }
 
+            await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
+            const balances = await Balance.find().sort({ balance: -1 });
+
+            let exMembers = [];
+            for (const b of balances) {
+              try {
+                await interaction.guild?.members.fetch(b.discordID);
+              } catch (err: any) {
+                console.log(err);
+                try {
+                  await interaction.client.users.fetch(b.discordID);
+                  exMembers.push(b.discordID);
+                } catch (err: any) {
+                  console.log(err);
+                }
+              }
+            }
+
             const emptyBalances = await Balance.deleteMany({
-              balance: { $eq: 0 },
+              $or: [{ balance: 0 }, { discordID: { $in: exMembers } }],
             });
 
-            await interaction.reply({
+            await interaction.editReply({
               content: `Deleted ${emptyBalances.deletedCount} entries from database`,
-              flags: MessageFlags.Ephemeral,
             });
             break;
           }
