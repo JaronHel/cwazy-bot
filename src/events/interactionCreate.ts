@@ -121,7 +121,6 @@ export default async (client: Client) => {
               }
               await interaction.reply({
                 content: `Balance of ${(member as GuildMember).displayName} (${(member as GuildMember).id}) adjusted for ${amount.toLocaleString("de-DE")}, new balance: ${newBalance.toLocaleString("de-DE")}`,
-                flags: MessageFlags.Ephemeral,
               });
             }
             break;
@@ -147,7 +146,6 @@ export default async (client: Client) => {
                 await existingMember.save();
                 await interaction.reply({
                   content: `Cleared balance of ${(member as GuildMember).displayName} (${(member as GuildMember).id}), new balance: ${existingMember.balance.toLocaleString("de-DE")}`,
-                  flags: MessageFlags.Ephemeral,
                 });
               }
             }
