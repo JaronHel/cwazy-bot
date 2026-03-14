@@ -11,14 +11,6 @@ import { hasPermission } from "../utils/utils";
 export default async (client: Client) => {
   client.on("interactionCreate", async (interaction: Interaction) => {
     if (interaction.isChatInputCommand()) {
-      // TODO ON HOLD
-      // if (interaction.commandName === "help") {
-      //   await interaction.reply({
-      //     content: "Help commands",
-      //     flags: MessageFlags.Ephemeral,
-      //   });
-      // }
-
       // if (interaction.commandName === "mass") {
       //   const sub = interaction.options.getSubcommand();
 

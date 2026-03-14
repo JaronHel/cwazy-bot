@@ -4,8 +4,9 @@ import clientReady from "./events/clientReady";
 import interactionCreate from "./events/interactionCreate";
 import messageCreate from "./events/messageCreate";
 import registerCommands from "./registerCommands";
+import { startBackupTask } from "./utils/task";
 
-const client = new Client({
+export const client = new Client({
   intents: [
     IntentsBitField.Flags.Guilds,
     IntentsBitField.Flags.GuildMembers,
@@ -26,4 +27,5 @@ try {
   process.exit(1);
 }
 
+startBackupTask(client);
 registerCommands();

@@ -16,17 +16,6 @@ if (process.env.GUILD_ID === undefined) {
 }
 
 const commands = [
-  // TODO ON HOLD
-  // new SlashCommandBuilder()
-  //   .setName("help")
-  //   .setDescription("Shows all the available commands"),
-  // new SlashCommandBuilder()
-  //   .setName("mass")
-  //   .setDescription("Mass commands")
-
-  //   .addSubcommand((sub) =>
-  //     sub.setName("create").setDescription("Create mass registration"),
-  //   ),
   new SlashCommandBuilder()
     .setName("balance")
     .setDescription("Balance commands")
