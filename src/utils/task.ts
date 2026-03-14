@@ -9,6 +9,8 @@ export function startBackupTask(client: Client) {
 
 async function databaseBackup(client: Client) {
   try {
+    console.log("Started backup...");
+
     const balances = await Balance.find();
 
     const filePath = "./balances.json";
