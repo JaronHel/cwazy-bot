@@ -1,4 +1,5 @@
 import { ActivityType, Client } from "discord.js";
+import { startBackupTask } from "../utils/task";
 
 export default async (client: Client) => {
   client.on("clientReady", () => {
@@ -8,6 +9,7 @@ export default async (client: Client) => {
         name: "Playing Albion Online",
         type: ActivityType.Custom,
       });
+      startBackupTask(client);
     }
   });
 };

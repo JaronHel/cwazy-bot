@@ -4,7 +4,6 @@ import clientReady from "./events/clientReady";
 import interactionCreate from "./events/interactionCreate";
 import messageCreate from "./events/messageCreate";
 import registerCommands from "./registerCommands";
-import { startBackupTask } from "./utils/task";
 
 export const client = new Client({
   intents: [
@@ -27,5 +26,4 @@ try {
   process.exit(1);
 }
 
-startBackupTask(client);
 registerCommands();
