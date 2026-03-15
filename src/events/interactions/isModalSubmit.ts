@@ -23,7 +23,7 @@ export default async (client: Client) => {
           interaction.channel instanceof TextChannel &&
           interaction.channel.isSendable()
         ) {
-          await interaction.deferReply({});
+          await interaction.deferReply();
 
           const massReferenceLink =
             interaction.fields.getTextInputValue("massReferenceLink");
@@ -61,7 +61,7 @@ export default async (client: Client) => {
           });
 
           for (let member of membersToRole) {
-            guild.members.addRole({
+            await guild.members.addRole({
               user: member,
               role: newRole,
             });
@@ -260,7 +260,7 @@ export default async (client: Client) => {
             name: `split-${messageId}`,
           });
           for (let member of membersToRole) {
-            guild.members.addRole({
+            await guild.members.addRole({
               user: member,
               role: newRole,
             });
