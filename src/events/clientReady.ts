@@ -2,7 +2,7 @@ import { ActivityType, Client } from "discord.js";
 import { startBackupTask } from "../utils/task";
 
 export default async (client: Client) => {
-  client.once("ready", () => {
+  client.once("clientReady", () => {
     if (client.user !== null) {
       console.log(`${client.user.tag} is ready`);
       client.user.setActivity({

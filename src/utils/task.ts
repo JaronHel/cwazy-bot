@@ -25,6 +25,7 @@ async function databaseBackup(client: Client) {
         },
       ],
     });
+    console.log("Backup successful");
   } catch (err: any) {
     console.error("Backup failed: " + err);
   }

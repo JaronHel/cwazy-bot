@@ -1,9 +1,12 @@
 import { Client, IntentsBitField } from "discord.js";
 import { connectToDb } from "./db/database";
 import clientReady from "./events/clientReady";
-import interactionCreate from "./events/interactionCreate";
+import isButton from "./events/interactions/isButton";
+import isChatInputCommand from "./events/interactions/isChatInputCommand";
+import isModalSubmit from "./events/interactions/isModalSubmit";
 import registerCommands from "./registerCommands";
 
+// Client intents
 export const client = new Client({
   intents: [
     IntentsBitField.Flags.Guilds,
@@ -13,8 +16,11 @@ export const client = new Client({
   ],
 });
 
+// Events
 clientReady(client);
-interactionCreate(client);
+isChatInputCommand(client);
+isModalSubmit(client);
+isButton(client);
 
 try {
   await connectToDb();

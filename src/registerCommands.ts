@@ -17,6 +17,13 @@ if (process.env.GUILD_ID === undefined) {
 
 const commands = [
   new SlashCommandBuilder()
+    .setName("split")
+    .setDescription("Split commands")
+    .addSubcommand((sub) =>
+      sub.setName("create").setDescription("Create Loot Split"),
+    ),
+
+  new SlashCommandBuilder()
     .setName("balance")
     .setDescription("Balance commands")
 
