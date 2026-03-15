@@ -46,10 +46,11 @@ export default async (client: Client) => {
 
             const message = await channel.messages.fetch(messageId);
 
-            const mentionedMembers = message.mentions.members;
+            const mentionedUsers = message.mentions.users;
 
-            if (mentionedMembers) {
-              membersToRole = mentionedMembers.map((member) => member);
+            for (const user of mentionedUsers.values()) {
+              const member = await guild.members.fetch(user.id);
+              membersToRole.push(member);
             }
           } catch (err) {
             await interaction.editReply({
@@ -238,10 +239,11 @@ export default async (client: Client) => {
 
             const message = await channel.messages.fetch(messageId);
 
-            const mentionedMembers = message.mentions.members;
+            const mentionedUsers = message.mentions.users;
 
-            if (mentionedMembers) {
-              membersToRole = mentionedMembers.map((member) => member);
+            for (const user of mentionedUsers.values()) {
+              const member = await guild.members.fetch(user.id);
+              membersToRole.push(member);
             }
           } catch (err) {
             await interaction.editReply({
