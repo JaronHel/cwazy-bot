@@ -127,7 +127,7 @@ export default async (client: Client) => {
         }
 
         const balanceChannel = await client.channels.fetch(
-          "1482657563039367319",
+          "1480526926073434205",
         );
 
         if (!balanceChannel || balanceChannel.type !== ChannelType.GuildText) {
