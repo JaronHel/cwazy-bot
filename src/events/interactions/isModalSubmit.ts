@@ -19,11 +19,12 @@ export default async (client: Client) => {
     }
     switch (interaction.customId) {
       case "splitModal": {
-        await interaction.deferReply();
         if (
           interaction.channel instanceof TextChannel &&
           interaction.channel.isSendable()
         ) {
+          await interaction.deferReply({});
+
           const massReferenceLink =
             interaction.fields.getTextInputValue("massReferenceLink");
 
