@@ -8,6 +8,7 @@ import {
   Interaction,
   MessageFlags,
   TextChannel,
+  ThreadChannel,
 } from "discord.js";
 
 export default async (client: Client) => {
@@ -20,7 +21,8 @@ export default async (client: Client) => {
     switch (interaction.customId) {
       case "splitModal": {
         if (
-          interaction.channel instanceof TextChannel &&
+          (interaction.channel instanceof ThreadChannel ||
+            interaction.channel instanceof TextChannel) &&
           interaction.channel.isSendable()
         ) {
           await interaction.deferReply();
@@ -97,8 +99,8 @@ export default async (client: Client) => {
             totalValueAfterRepair * (fee / 100),
           );
           const netTotal = totalValueAfterRepair - calculatedFeeValue;
-          const membersInSplitCount = membersToRole.filter(
-            (member) => !member.roles.cache.has(newRole.id),
+          const membersInSplitCount = membersToRole.filter((member) =>
+            member.roles.cache.has(newRole.id),
           ).length;
           const splitPerMember = Math.trunc(netTotal / membersInSplitCount);
 
@@ -212,7 +214,8 @@ export default async (client: Client) => {
           flags: MessageFlags.Ephemeral,
         });
         if (
-          interaction.channel instanceof TextChannel &&
+          (interaction.channel instanceof ThreadChannel ||
+            interaction.channel instanceof TextChannel) &&
           interaction.channel.isSendable() &&
           interaction.message !== null
         ) {
@@ -296,8 +299,8 @@ export default async (client: Client) => {
             totalValueAfterRepair * (fee / 100),
           );
           const netTotal = totalValueAfterRepair - calculatedFeeValue;
-          const membersInSplitCount = membersToRole.filter(
-            (member) => !member.roles.cache.has(newRole.id),
+          const membersInSplitCount = membersToRole.filter((member) =>
+            member.roles.cache.has(newRole.id),
           ).length;
           const splitPerMember = Math.trunc(netTotal / membersInSplitCount);
 
