@@ -170,8 +170,8 @@ export default async (client: Client) => {
               balances.map(async (b) => {
                 try {
                   return await guild.members.fetch(b.discordID);
-                } catch (err: any) {
-                  return await client.users.fetch(b.discordID);
+                } catch {
+                  return null;
                 }
               }),
             );
@@ -179,9 +179,16 @@ export default async (client: Client) => {
             let total = 0;
 
             balances.forEach((balance, i) => {
+              const member = members[i];
+
+              const name =
+                member !== null
+                  ? member.displayName
+                  : `Unknown User (${balance.discordID})`;
+
               embed.addFields({
-                name: "\u200B",
-                value: `**${i + 1}.** ${members[i].displayName} - **${balance.balance.toLocaleString("de-DE")}**`,
+                name: "",
+                value: `**${i + 1}.** ${name} - **${balance.balance.toLocaleString("de-DE")}**`,
               });
               total += balance.balance;
             });
