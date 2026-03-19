@@ -178,20 +178,18 @@ export default async (client: Client) => {
 
             let total = 0;
 
-            balances.forEach((balance, i) => {
+            // TODO expand leaderboard so that only top 10 show and the leaderboard can be read like a book
+            const lines = balances.map((balance, i) => {
               const member = members[i];
-
               const name =
                 member !== null
                   ? member.displayName
                   : `Unknown User (${balance.discordID})`;
 
-              embed.addFields({
-                name: "",
-                value: `**${i + 1}.** ${name} - **${balance.balance.toLocaleString("de-DE")}**`,
-              });
-              total += balance.balance;
+              return `**${i + 1}.** ${name} - **${balance.balance.toLocaleString("de-DE")}**`;
             });
+
+            embed.setDescription(lines.join("\n"));
 
             embed.setTitle(
               `Balances - Total: ${total.toLocaleString("de-DE")}`,
@@ -206,7 +204,6 @@ export default async (client: Client) => {
             });
           }
           break;
-          // TODO expand leaderboard so that only top 10 show and the leaderboard can be read like a book
         }
       }
     }
