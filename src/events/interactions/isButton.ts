@@ -140,12 +140,11 @@ export default async (client: Client) => {
         });
 
         const membersForSplit = role.members;
-        const amount =
-          Number(
-            interaction.message.embeds[0].fields.find(
-              (f) => f.name === "Split per member",
-            )?.value,
-          ) ?? 0;
+        const amount = Number(
+          interaction.message.embeds[0].fields
+            .find((f) => f.name === "Split per member")
+            ?.value.replaceAll(/\./g, ""),
+        );
 
         thread.send(massField);
         for (const member of membersForSplit.values()) {
