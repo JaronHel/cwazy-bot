@@ -180,7 +180,7 @@ export default async (client: Client) => {
 
             balances.forEach((balance, i) => {
               embed.addFields({
-                name: "",
+                name: "\u200B",
                 value: `**${i + 1}.** ${members[i].displayName} - **${balance.balance.toLocaleString("de-DE")}**`,
               });
               total += balance.balance;
