@@ -186,6 +186,8 @@ export default async (client: Client) => {
                   ? member.displayName
                   : `Unknown User (${balance.discordID})`;
 
+              total += balance.balance;
+
               return `**${i + 1}.** ${name} - **${balance.balance.toLocaleString("de-DE")}**`;
             });
 
